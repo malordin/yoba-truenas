@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp
+  labels:
+    app: ftp_label
+spec:
+  selector:
+    matchLabels:
+      app: ftp_label
+  replicas: 1
+  hostPath:
+      path: /mnt/lvm_test
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ftp_label
+    spec:
+      containers:
+       —name: ftp
+          image: bogem/ftp
+              env:
+              - name: FTP_USER
+              value: "malordin"
+              - name: FTP_PASS
+              value: "hrentebe174"
+              - name: PASV_ADDRESS
+              value: "192.168.0.203"
+          ports:
+           —containerPort: 20
