@@ -24,9 +24,9 @@ spec:
        image: test
     env:
     - name: FTP_USER
-      value: "malordin"
+      value: "admin"
     - name: FTP_PASS
-      value: "hrentebe174"
+      value: "admin"
     - name: PASV_ADDRESS
       value: "192.168.0.203"
     ports:
