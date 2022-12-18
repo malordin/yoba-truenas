@@ -1,4 +1,4 @@
-apiVersion: apps/v2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -10,8 +10,6 @@ spec:
     matchLabels:
       app: ftp_label
   replicas: 1
-  hostPath:
-      path: /mnt/lvm_test
   strategy:
     type: RollingUpdate
   template:
@@ -20,14 +18,34 @@ spec:
         app: ftp_label
     spec:
       containers:
-       —name: ftp
-       image: test
-    env:
-    - name: FTP_USER
-      value: "admin"
-    - name: FTP_PASS
-      value: "admin"
-    - name: PASV_ADDRESS
-      value: "192.168.0.203"
-    ports:
-          —containerPort: 20
+       - name: ftp
+         image: garethflowers/ftp-server
+         env:
+            - name: FTP_USER
+              value: "admin"
+            - name: FTP_PASS
+              value: "admin"
+            - name: PASV_ADDRESS
+              value: "192.168.0.203"
+         ports:
+            - containerPort: 21
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: ftp_label
+  ports:
+      - port: 1744
+        targetPort: 21
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ftp-ftp-ingress
+spec:
+  backend:
+    serviceName: my-service
+    servicePort: 1744
